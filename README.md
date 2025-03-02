@@ -1,0 +1,1 @@
+A full-stack web project that mocks Twitter by using Rest API and PostgreSQL with a vite + react front-end app.
