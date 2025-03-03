@@ -39,14 +39,14 @@ public class Tweet {
 
     @CreationTimestamp
     @Column(name = "post_date")
-    private LocalDateTime postDate;
+    private LocalDateTime postDate = LocalDateTime.now();
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
     @OneToMany(mappedBy = "tweet", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<Like> likes;
+    private Set<TweetLike> likes;
 
     @OneToMany(mappedBy = "tweet", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Comment> comments;

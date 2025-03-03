@@ -34,7 +34,7 @@ public class Comment {
 
     @CreationTimestamp
     @Column(name = "comment_date", nullable = false)
-    private LocalDateTime commentDate;
+    private LocalDateTime commentDate = LocalDateTime.now();
 
 
     @ManyToOne
@@ -46,6 +46,6 @@ public class Comment {
     private Tweet tweet;
 
     @OneToMany(mappedBy = "comment", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<Like> likes;
+    private Set<CommentLike> likes;
 
 }

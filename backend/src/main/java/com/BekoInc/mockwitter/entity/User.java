@@ -22,6 +22,7 @@ import java.util.Set;
 @Data
 @Entity
 @Table( name = "user", schema = "mockwitter")
+
 public class User {
 
     //https://chat.deepseek.com/a/chat/s/aa78a905-10e5-4842-9e8e-a9d89f9de5bc
@@ -66,8 +67,8 @@ public class User {
 //    No whitespace allowed.
 //    Length between 8 and 20 characters.
     @Column(name = "password", nullable = false)
-    @NotNull
-    @NotBlank
+    @NotNull(message = "Password can not be null!")
+    @NotBlank(message = "Password can not be empty!")
     @Pattern(regexp = Regexes.PASSWORD_REGEX, message = "Password must be 8-20 characters long, include at least one uppercase letter, one lowercase letter, one digit, one special character and white space is not allowed!")
     private String password;
 
@@ -77,7 +78,7 @@ public class User {
 
     @CreationTimestamp
     @Column(name = "registration_date", updatable = false)
-    private LocalDateTime registrationDate;
+    private LocalDateTime registrationDate = LocalDateTime.now();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Tweet> tweets;
@@ -89,7 +90,10 @@ public class User {
     private Set<Comment> comments;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<Like> likes;
+    private List<TweetLike> tweetLikes;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<CommentLike> commentLikes;
 
     @ManyToMany
     @JoinTable(
