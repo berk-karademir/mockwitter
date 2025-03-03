@@ -3,6 +3,8 @@ package com.BekoInc.mockwitter.util;
 
 public class Regexes {
 
+    public static final String NAME_or_SURNAME = "^[A-Za-z]{1,20}$";
+
     public static final String EMAIL_REGEX = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$";
 
     public static final String USERNAME_REGEX = "^[A-Za-z0-9]{1,20}$";
