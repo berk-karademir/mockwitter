@@ -1,18 +1,18 @@
 package com.BekoInc.mockwitter.entity;
 
 
+import com.BekoInc.mockwitter.entity.user.User;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
 
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
+@Getter
+@Setter
 @MappedSuperclass
 public abstract class Like {
 

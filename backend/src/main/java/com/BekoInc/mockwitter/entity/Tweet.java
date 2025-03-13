@@ -1,6 +1,7 @@
 package com.BekoInc.mockwitter.entity;
 
-
+import com.BekoInc.mockwitter.entity.user.User;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -12,8 +13,8 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
-import java.util.Set;
-
+import java.util.ArrayList;
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -22,14 +23,13 @@ import java.util.Set;
 @Table(name = "tweet", schema = "mockwitter")
 public class Tweet {
 
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Positive(message = "Tweet ID must be greater than 0!")
-    @NotNull(message = "Tweet ID can not be null!")
-    @Column(name = "id" , nullable = false)
+    @Column(name = "id", nullable = false)
     private Long id;
 
-    //tweet body
     @Column(name = "content", nullable = false)
     @Size(min = 1, max = 280, message = "Tweet must be between 1 and 280 characters!")
     @NotNull(message = "Tweet can not be null!")
@@ -40,17 +40,21 @@ public class Tweet {
     @Column(name = "post_date")
     private LocalDateTime postDate = LocalDateTime.now();
 
+//    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
+//    @JsonIgnore
     @OneToMany(mappedBy = "tweet", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<TweetLike> likes;
+    private List<TweetLike> likes= new ArrayList<>();
 
+//    @JsonIgnore
     @OneToMany(mappedBy = "tweet", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<Comment> comments;
+    private List<Comment> comments= new ArrayList<>();
 
-    @OneToMany(mappedBy = "tweet", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<Retweet> retweets;
+//    @JsonIgnore
+@OneToMany(mappedBy = "tweet")
+private List<Retweet> retweets= new ArrayList<>();
 
 }

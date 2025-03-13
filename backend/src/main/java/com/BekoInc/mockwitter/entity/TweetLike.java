@@ -5,7 +5,10 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
+@Data
 @Entity
 @Table(name = "tweet_likes", schema = "mockwitter")
 public class TweetLike extends Like {

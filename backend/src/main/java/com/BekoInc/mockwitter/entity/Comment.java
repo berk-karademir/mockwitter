@@ -1,6 +1,7 @@
 package com.BekoInc.mockwitter.entity;
 
 
+import com.BekoInc.mockwitter.entity.user.User;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -44,7 +45,14 @@ public class Comment {
     @JoinColumn(name = "tweet_id", nullable = false)
     private Tweet tweet;
 
+    @ManyToOne
+    @JoinColumn(name = "retweet_id")
+    private Retweet retweet;
+
     @OneToMany(mappedBy = "comment", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<CommentLike> likes;
+
+    @OneToMany(mappedBy = "comment", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Reply> replies;
 
 }
