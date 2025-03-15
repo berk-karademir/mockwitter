@@ -66,11 +66,11 @@ public class RetweetServiceImpl implements RetweetService {
         Tweet tweetToRetweet = tweetRepository.findById(tweetId)
                 .orElseThrow(() -> new MockwitterException("Tweet(to retweet) not found with id " + tweetId, HttpStatus.NOT_FOUND));
 
-        TweetResponse tweet = tweetMapper.toDTO(tweetToRetweet);
+
 
         Retweet retweet = new Retweet();
-        retweet.setTweet(tweetToRetweet);
         retweet.setContent(RTRequest.getContent());
+        retweet.setTweet(tweetToRetweet);
         retweet.setUser(user);
         Retweet savedRetweet = retweetRepository.save(retweet);
         return retweetMapper.toDTO(savedRetweet);

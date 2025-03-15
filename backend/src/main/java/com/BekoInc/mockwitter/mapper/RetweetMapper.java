@@ -5,11 +5,17 @@ import com.BekoInc.mockwitter.dto.UserDTO;
 import com.BekoInc.mockwitter.entity.Retweet;
 import com.BekoInc.mockwitter.entity.user.User;
 import org.springframework.stereotype.Component;
+import org.springframework.beans.factory.annotation.Autowired;
 
 @Component
 public class RetweetMapper {
 
+    private final TweetMapper tweetMapper;
 
+    @Autowired
+    public RetweetMapper(TweetMapper tweetMapper) {
+        this.tweetMapper = tweetMapper;
+    }
 
     public RetweetResponse toDTO(Retweet retweet) {
         if (retweet == null) {
@@ -17,19 +23,17 @@ public class RetweetMapper {
         }
 
         RetweetResponse dto = new RetweetResponse();
-
         dto.setId(retweet.getId());
         dto.setContent(retweet.getContent());
         dto.setPostDate(retweet.getRetweetDate());
-        // User bilgilerini ekle
+
         if (retweet.getUser() != null) {
             dto.setUser(toUserDTO(retweet.getUser()));
         }
 
-        // Set the original tweet's ID
-
-
-        // İlişkili koleksiyon sayılarını ekle
+        if (retweet.getTweet() != null) {
+            dto.setTweet(tweetMapper.toDTO(retweet.getTweet()));
+        }
 
         dto.setLikesCount(retweet.getRtLikes() != null ? retweet.getRtLikes().size() : 0);
         dto.setCommentsCount(retweet.getComments() != null ? retweet.getComments().size() : 0);
@@ -45,9 +49,6 @@ public class RetweetMapper {
         UserDTO dto = new UserDTO();
         dto.setId(user.getId());
         dto.setUsername(user.getUsername());
-        // Aşağıdaki alanlar User sınıfınızda var ise ekle
-        // dto.setDisplayName(user.getDisplayName());
-        // dto.setProfilePictureUrl(user.getProfilePictureUrl());
         return dto;
     }
 }
