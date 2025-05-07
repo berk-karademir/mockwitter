@@ -37,22 +37,22 @@ public class SecurityConfiguration {
                 .csrf(csrf -> csrf.disable()) // CSRF koruması devre dışı
                 .authorizeHttpRequests(auth -> {
 
-                    // Herkese açık endpointler
-                    auth.requestMatchers("/public/**", "/auth/**", "/roles/**", "/home/**").permitAll();
-                    auth.requestMatchers(HttpMethod.GET, "/tweet/findByUserId/**", "/tweet/findById/**").permitAll();
-                    auth.requestMatchers(HttpMethod.GET,  "/tweet/findById/**").permitAll();
-                    auth.requestMatchers(HttpMethod.GET,  "/home").permitAll();
-
-                    // Yetkilendirme gerektiren endpointler
-                    auth.requestMatchers("/tweet/**", "/reply/**", "/like/**", "/comment/**", "/retweet/**", "/user/**")
-                            .hasAnyAuthority(UserRoleType.CASUAL.name(), UserRoleType.COMPANY.name(), UserRoleType.ADMIN.name());
-
-                    // Sadece admin rolüne açık endpointler
-                    auth.requestMatchers("/admin/**").hasAuthority(UserRoleType.ADMIN.name());
-
-                    // Diğer tüm istekler kimlik doğrulama gerektirir
-                    auth.anyRequest().authenticated();
-                })
+//                    // Herkese açık endpointler
+//                    auth.requestMatchers("/public/**", "/auth/**", "/roles/**", "/home/**").permitAll();
+//                    auth.requestMatchers(HttpMethod.GET, "/tweet/findByUserId/**", "/tweet/findById/**").permitAll();
+//                    auth.requestMatchers(HttpMethod.GET,  "/tweet/findById/**").permitAll();
+//                    auth.requestMatchers(HttpMethod.GET,  "/home").permitAll();
+//
+//                    // Yetkilendirme gerektiren endpointler
+//                    auth.requestMatchers("/tweet/**", "/reply/**", "/like/**", "/comment/**", "/retweet/**", "/user/**")
+//                            .hasAnyAuthority(UserRoleType.CASUAL.name(), UserRoleType.COMPANY.name(), UserRoleType.ADMIN.name());
+//
+//                    // Sadece admin rolüne açık endpointler
+//                    auth.requestMatchers("/admin/**").hasAuthority(UserRoleType.ADMIN.name());
+//
+//                    // Diğer tüm istekler kimlik doğrulama gerektirir
+                   auth.anyRequest().permitAll();
+               })
                 .formLogin(Customizer.withDefaults())
                 .httpBasic(Customizer.withDefaults())
                 .build();

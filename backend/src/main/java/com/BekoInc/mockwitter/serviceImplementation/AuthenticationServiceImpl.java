@@ -2,19 +2,21 @@ package com.BekoInc.mockwitter.serviceImplementation;
 
 import com.BekoInc.mockwitter.dto.UserEssentialCredentials;
 import com.BekoInc.mockwitter.dto.UserLoginRequest;
+import com.BekoInc.mockwitter.dto.UserLoginResponse;
 import com.BekoInc.mockwitter.dto.UserRegistrationResponse;
 import com.BekoInc.mockwitter.entity.user.Role;
 import com.BekoInc.mockwitter.entity.user.User;
+import com.BekoInc.mockwitter.util.UserRoleType;
 import com.BekoInc.mockwitter.exception.MockwitterException;
 import com.BekoInc.mockwitter.repository.RoleRepository;
 import com.BekoInc.mockwitter.repository.UserRepository;
 import com.BekoInc.mockwitter.service.AuthenticationService;
-import com.BekoInc.mockwitter.util.UserRoleType;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -104,35 +106,36 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
 
-//    @Override
-//    public UserLoginResponse login(UserLoginRequest loginRequest, HttpServletRequest request) {
-//        Optional<User> optionalUser = userRepository.findUserByEmail(loginRequest.getEmailOrUsername());
-//
-//        // Eğer email ile kullanıcı bulunamazsa, username ile ara
-//        if (optionalUser.isEmpty()) {
-//            optionalUser = userRepository.findUserByUsername(loginRequest.getEmailOrUsername());
-//        }
-//
-//        // Kullanıcı hala bulunamazsa hata fırlat
-//        if (optionalUser.isEmpty() || !passwordEncoder.matches(loginRequest.getPassword(), optionalUser.get().getPassword())) {
-//            throw new IllegalArgumentException("Invalid username/email or password.");
-//        }
-//
-//        User user = optionalUser.get();
-//
-//        // Spring Security’nin kimlik doğrulama sistemini kullanarak giriş yap
-//        UsernamePasswordAuthenticationToken authToken =
-//                new UsernamePasswordAuthenticationToken(user.getUsername(), null, user.getAuthorities());
-//
-//        SecurityContextHolder.getContext().setAuthentication(authToken);
-//
-//        // Kullanıcı oturumunu başlat (JSESSIONID otomatik oluşur)
-//        request.getSession().setAttribute("user", user);
-//        return new UserLoginResponse("inş başarılıdır");
-//    }
+    @Override
+    public UserLoginResponse login(UserLoginRequest loginRequest, HttpServletRequest request) {
+        String identifier = loginRequest.getEmailOrUsername();
+        
+        // Önce username ile arama yap
+        Optional<User> userOpt = userRepository.findUserByUsername(identifier);
+        
+        // Eğer username ile bulunamazsa email ile arama yap
+        if (!userOpt.isPresent()) {
+            userOpt = userRepository.findUserByEmail(identifier);
+        }
 
+        if (!userOpt.isPresent()) {
+            throw new UsernameNotFoundException("User not found with identifier: " + identifier);
+        }
 
+        User user = userOpt.get();
+        if (!passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
+            throw new MockwitterException("Invalid credentials", HttpStatus.UNAUTHORIZED);
+        }
 
+        // Spring Security kimlik doğrulamasını başlat
+        UsernamePasswordAuthenticationToken authToken =
+                new UsernamePasswordAuthenticationToken(user.getUsername(), null, user.getAuthorities());
 
+        SecurityContextHolder.getContext().setAuthentication(authToken);
 
+        // Oturumu başlat ve JSESSIONID'yi ayarla
+        request.getSession().setAttribute("user", user);
+        
+        return new UserLoginResponse(user.getId(), user.getUsername());
+    }
 }

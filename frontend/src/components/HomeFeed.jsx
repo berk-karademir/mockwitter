@@ -1,47 +1,45 @@
-import { useEffect, useState } from "react";
-import { api } from "../service/axios";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
 
 const HomeFeed = () => {
-  const [tweets, setTweets] = useState([]); // Varsayılan olarak boş dizi
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [feedData, setFeedData] = useState({ tweets: [], retweets: [] });
 
   useEffect(() => {
-    const fetchTweets = async () => {
-      try {
-        const response = await api.get("/home");
-        const data = Array.isArray(response.data) ? response.data : []; // Güvenlik önlemi
-        setTweets(data);
-      } catch (err) {
-        setError("Failed to load tweets");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchTweets();
+    axios
+      .get("http://localhost:3000/home")
+      .then((response) => {
+        setFeedData(response.data);
+      })
+      .catch((error) => {
+        console.error("Hata:", error);
+      });
   }, []);
 
-  if (loading) return <p>Loading tweets...</p>;
-  if (error) return <p>{error}</p>;
-  if (tweets.length === 0) return <p>No tweets posted yet.</p>; // Eğer hiç tweet yoksa
-
   return (
-    <div className="p-4 max-w-xl mx-auto">
-      <h2 className="text-xl font-bold mb-4">Home Feed</h2>
-      <ul>
-        {tweets.map((tweet) => (
-          <li key={tweet.id} className="border p-4 rounded-lg mb-2 shadow-sm">
-            <p className="font-semibold">@{tweet.user.username}</p>
-            <p>{tweet.content}</p>
-            <div className="text-sm text-gray-500 mt-2 flex justify-between">
-              <span>❤️ {tweet.likesCount}</span>
-              <span>💬 {tweet.commentsCount}</span>
-              <span>🔁 {tweet.retweetsCount}</span>
-            </div>
-          </li>
-        ))}
-      </ul>
+    <div>
+      <h2>Tweetler</h2>
+      {feedData.tweets.map((tweet) => (
+        <div key={`tweet-${tweet.id}`} style={{ border: "1px solid #ccc", margin: "10px", padding: "10px" }}>
+          <p><strong>{tweet.user.username}</strong>: {tweet.content}</p>
+          <small>{new Date(tweet.postDate).toLocaleString()}</small>
+          <div>Likes: {tweet.likesCount} | Dislikes: {tweet.dislikesCount} | Comments: {tweet.commentsCount} | Retweets: {tweet.retweetsCount}</div>
+        </div>
+      ))}
+
+      <h2>Retweetler</h2>
+      {feedData.retweets.map((retweet) => (
+        <div key={`retweet-${retweet.id}`} style={{ border: "1px dashed #999", margin: "10px", padding: "10px" }}>
+          <p><strong>{retweet.user.username}</strong> retweetledi:</p>
+          <p><em>{retweet.content}</em></p>
+          <small>{new Date(retweet.postDate).toLocaleString()}</small>
+          <div>Likes: {retweet.likesCount} | Dislikes: {retweet.dislikeCount} | Comments: {retweet.commentsCount}</div>
+
+          <div style={{ marginTop: "10px", padding: "10px", backgroundColor: "#f9f9f9" }}>
+            <p><strong>{retweet.tweet.user.username}</strong>: {retweet.tweet.content}</p>
+            <small>{new Date(retweet.tweet.postDate).toLocaleString()}</small>
+          </div>
+        </div>
+      ))}
     </div>
   );
 };

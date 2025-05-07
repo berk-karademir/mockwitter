@@ -1,15 +1,10 @@
 package com.BekoInc.mockwitter.util;
 
 import com.BekoInc.mockwitter.entity.user.Role;
-import com.BekoInc.mockwitter.entity.user.User;
 import com.BekoInc.mockwitter.repository.RoleRepository;
-import com.BekoInc.mockwitter.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
-
-import java.util.List;
 
 @Component
 public class DataInitializer implements CommandLineRunner {

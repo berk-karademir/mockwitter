@@ -1,7 +1,6 @@
 package com.BekoInc.mockwitter.entity;
 
 import com.BekoInc.mockwitter.entity.user.User;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;

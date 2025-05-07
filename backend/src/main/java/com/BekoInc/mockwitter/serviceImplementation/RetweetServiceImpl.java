@@ -2,7 +2,6 @@ package com.BekoInc.mockwitter.serviceImplementation;
 
 import com.BekoInc.mockwitter.dto.RetweetRequest;
 import com.BekoInc.mockwitter.dto.RetweetResponse;
-import com.BekoInc.mockwitter.dto.TweetResponse;
 import com.BekoInc.mockwitter.entity.Retweet;
 import com.BekoInc.mockwitter.entity.Tweet;
 import com.BekoInc.mockwitter.entity.user.User;
@@ -16,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -41,22 +41,17 @@ public class RetweetServiceImpl implements RetweetService {
     @Override
     public List<RetweetResponse> getAllRetweetsForFeed() {
         List<Retweet> retweets = retweetRepository.findAll();
+
+        // BOŞSA EXCEPTION ATMA
         if (retweets.isEmpty()) {
-            throw new MockwitterException("Your request has completed successfully but there is no posted tweets yet.", HttpStatus.OK);
+            return Collections.emptyList();
         }
-        List<Tweet> tweets = tweetRepository.findAll();
-
-        for(Tweet tweet : tweets) {
-            for(Retweet retweet : retweets) {
-                retweet.setTweet(tweet);
-            }
-        }
-
 
         return retweets.stream()
                 .map(retweetMapper::toDTO)
                 .collect(Collectors.toList());
     }
+
 
     @Override
     public RetweetResponse createRetweet(RetweetRequest RTRequest, User user, Long tweetId) {

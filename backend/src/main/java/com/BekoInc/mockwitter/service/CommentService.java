@@ -1,6 +1,5 @@
 package com.BekoInc.mockwitter.service;
 
-import com.BekoInc.mockwitter.dto.ReplyDTO;
 import com.BekoInc.mockwitter.entity.Comment;
 import com.BekoInc.mockwitter.entity.user.User;
 

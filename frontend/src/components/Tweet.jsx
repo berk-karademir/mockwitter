@@ -1,43 +1,36 @@
 import React, { useState } from "react";
-import axios from "axios";
+import { apiWithCredentials } from '../service/axios';
 
 const TweetSender = () => {
-  const [content, setContent] = useState("");  // Başlangıçta boş bir içerik
+  const [content, setContent] = useState("");
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
 
-  // Kullanıcı adı ve şifre
-  const username = 'berk123';
-  const password = 'SecurePass@2023';
-  
-  // Authorization başlığı için Base64 encoding (btoa kullanarak)
-  const auth = 'Basic ' + btoa(username + ':' + password);
-  
-  // API'ye gönderilecek veri
-  const data = {
-    content: content // state'deki içeriği gönderiyoruz
-  };
-
-  const sendTweet = () => {
-    axios.post('http://localhost:3000/tweet', data, {
-      headers: {
-        'Authorization': auth,
-        'Content-Type': 'application/json'  // JSON formatında body gönderiyoruz
-      }
-    })
-    .then(response => {
-      console.log('Veri:', response.data);
-    })
-    .catch(error => {
-      console.error('Hata:', error);
-    });
+  const sendTweet = async () => {
+    try {
+      const response = await apiWithCredentials.post('/tweet', { content });
+      setSuccess("Tweet başarıyla gönderildi!");
+      console.log(response.data);
+      setContent(""); // Başarılı gönderim sonrası input'u temizle
+    } catch (error) {
+      setError(error.response?.data?.message || "Tweet gönderilemedi");
+      console.error('Tweet gönderme hatası:', error);
+    }
   };
 
   return (
     <div style={{ width: "400px", margin: "20px auto", padding: "20px", border: "1px solid #ccc", borderRadius: "8px", boxShadow: "2px 2px 10px rgba(0,0,0,0.1)" }}>
+      {error && (
+        <div style={{ color: "red", marginBottom: "10px" }}>{error}</div>
+      )}
+      {success && (
+        <div style={{ color: "green", marginBottom: "10px" }}>{success}</div>
+      )}
       <input
         type="text"
         placeholder="Tweetinizi yazın..."
-        value={content}  // content'i state'ten alıyoruz
-        onChange={(e) => setContent(e.target.value)}  // input alanındaki değeri content state'ine set ediyoruz
+        value={content}
+        onChange={(e) => setContent(e.target.value)}
         style={{ width: "100%", padding: "10px", marginBottom: "10px", border: "1px solid #ccc", borderRadius: "4px" }}
       />
       <button

@@ -2,7 +2,6 @@ package com.BekoInc.mockwitter.dto;
 
 import com.BekoInc.mockwitter.entity.user.Role;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import jakarta.annotation.Nullable;
 
 import java.util.Collection;
 

@@ -1,6 +1,5 @@
 package com.BekoInc.mockwitter.entity;
 
-import com.BekoInc.mockwitter.entity.user.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
